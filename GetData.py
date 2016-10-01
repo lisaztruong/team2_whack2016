@@ -7,10 +7,9 @@ Created on Sat Oct  1 16:22:03 2016
 
 import sqlite3
 conn = sqlite3.connect('schoolratings')
-#t1_schools (school_id INTEGER, school_name TEXT)
-#t2_ratings (rating_id INTEGER, school_id INTEGER, overall INTEGER, physical INTEGER, academic INTEGER, resources INTEGER, rating TEXT)
 c1 = conn.cursor()
 
+#don't call this unless you want to reset all the databases!!
 def set_up():
     c1.execute('DROP TABLE t1_schools;')
     c1.execute('DROP TABLE t2_ratings;')
@@ -42,6 +41,16 @@ def get_ratings(schoolname):
     academic_average  = academic_total/count
     resources_average = resources_total/count
     return [overall_average, physical_average, academic_average, resources_average, ratings]
+    
+categories = {'overall':0, 'physical':1, 'academic':2, 'resources':3}
+
+def get_rankings(category):
+    rankings = []
+    for schooldata in c1.execute('SELECT school_name FROM t1_schools;'):
+        schoolname = schooldata[0]
+        rankings.append((schoolname, get_ratings(schoolname)[categories[category]]))
+    #now sort 
+    
     
     
 def put_in_range(score):
