@@ -44,7 +44,6 @@ def get_ratings(schoolname):
     resources_average = resources_total/count
     return [overall_average, physical_average, academic_average, resources_average, ratings]
     
-<<<<<<< HEAD
 categories = {'overall':0, 'physical':1, 'academic':2, 'resources':3}
 
 def get_rankings(category):
@@ -53,13 +52,9 @@ def get_rankings(category):
         schoolname = schooldata[0]
         rankings.append((schoolname, get_ratings(schoolname)[categories[category]]))
     #now sort 
-    
-    
-    
-=======
+
 # Defaults scores below 0 to be 0 and scores higher than 10 to be 10 so that all scores are
 # within the range 0-10
->>>>>>> 9db74d8678a2333742d77b64ce22f27132c075ae
 def put_in_range(score):
     if score > 10:
         return 10
