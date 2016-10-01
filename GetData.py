@@ -18,17 +18,17 @@ def set_up():
     c1.execute('CREATE TABLE t2_ratings (rating_id INTEGER PRIMARY KEY AUTOINCREMENT, school_id, overall INTEGER, physical INTEGER, academic INTEGER, resources INTEGER, rating TEXT, FOREIGN KEY (school_id) REFERENCES t1_schools(school_id));')
 
 def get_ratings(schoolname):
-    for schooldata in c1.execute('SELECT school_id FROM t1_schools WHERE school_name = "'+str(schoolname)+'";'):
+    command = 'SELECT school_id FROM t1_schools WHERE school_name = \"'+schoolname+'\";'
+    for schooldata in c1.execute(command):
         school_id = schooldata[0]
-        print(school_id)
-        break
     count = 0.0
     overall_total = 0
     physical_total = 0
     academic_total = 0
     resources_total = 0
     ratings = {}
-    for data in c1.execute('SELECT overall, physical, academic, resources, rating_id, rating FROM t2_ratings WHERE school_id = '+school_id+';'):
+    command = 'SELECT overall, physical, academic, resources, rating_id, rating FROM t2_ratings WHERE school_id = '+str(school_id)+';'
+    for data in c1.execute(command):
         count             +=  1            
         overall_total     +=  data[0]
         physical_total    +=  data[1]
@@ -43,7 +43,6 @@ def get_ratings(schoolname):
     resources_average = resources_total/count
     return [overall_average, physical_average, academic_average, resources_average, ratings]
     
-#print(get_ratings("MIT"))
     
 def put_in_range(score):
     if score > 10:
@@ -61,9 +60,6 @@ def add_rating(schoolname, overall, physical, academic, resources, rating):
         school_id = schooldata[0]
     c1.execute('INSERT INTO "t2_ratings" (school_id, overall, physical, academic, resources, rating) VALUES (?,?,?,?,?,?)',
                (school_id, overall, physical, academic, resources, rating))
-    
-    
-add_rating("MIT", 10, 10, 10, 10, "it rocks")
     
 c1.close()
 conn.commit()
