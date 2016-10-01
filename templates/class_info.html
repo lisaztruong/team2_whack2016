@@ -1,0 +1,290 @@
+{% extends "layout.html" %}
+  
+{% block content %}
+
+<div id="phone-modal" class="modal">
+	<div class="modal-content row">
+		<form method="POST" action="http://www.ndclassalert.com/" class="col s12">
+			<div class="input-field col s12">
+				<i class="material-icons prefix">phone</i>
+				<input id="phone_number" name="phone_number" type="tel" pattern="[0-9]{10}" class="validate" required="">
+				<label for="phone_number" data-error="Enter number as 0123456789" data-success="Sweet!">Telephone</label>
+			</div>
+			<div class="input-field col s12">
+				<i class="material-icons prefix">dialpad</i>
+				<input id="crn" name="crn" type="tel" pattern="[0-9]{5}" class="validate" required="" value="{{crn}}">
+		   		<label for="crn" data-error="A CRN must be 5 digits" data-success="Sweet!">CRN:</label>
+		    	</div>	
+			<button class="col s4 offset-s4 blue lighten-2 btn waves-effect waves-light" type="submit" name="action">Submit
+				<i class="material-icons right">send</i>
+			</button>	
+		</form>
+	</div>
+</div>
+
+<h1 align="center">{{CourseName}}</h1>
+<div class="col s12 row">
+	<button class="blue col offset-s3 s6 btn btn-large waves-effect modal-trigger" href="#phone-modal" style="margin-left:25%;">Watch Class for open spots!</button>
+</div>
+<div id = "Sections">
+	<table>
+		<thead>
+			<tr>
+				<th data-field="toughness">Toughness</th>
+				<th data-field="interest">Interest</th>
+				<th data-field="textbook-needed">Textbook Needed</th>
+				<th data-field="overall">Overall</th>
+			<tr>
+		<thead>
+			<tr>
+				<td>{% if toughness %}{{ toughness }}{% else %}None{% endif %}</td>
+				<td>{% if interest %}{{ interest }}{% else %}None{% endif %}</td>
+				<td>{% if Textbook %}{{Textbook * 100 }}% of reviews said yes {% else %}None{% endif %}</td>
+				<td>{% if Overall_Rating %}{{ Overall_Rating }}{% else %}None{% endif %}</td>
+			</tr>
+		<tbody>
+		</tbody>
+	</table>
+	<h4 align="center"> Reviews </h4>
+	<div class="row">
+		<ul class="collapsible" data-collapsible="accordian">
+			<li>
+				<div class="collapsible-header active"><i class="material-icons">add</i>Course Reviews</div>
+      				<div class="collapsible-body">
+					<ul class="collection">
+					{% for review in Individual_Reviews %}
+						<li class="collection-item">
+							<table>
+								<tr>
+									<td> Toughness: {{review[4]}} </td>
+									<td> Interest: {{review[5]}}  </td>
+									<td> Date: {{review[12]}} </td>
+									<td> Semester: {{review[9]}} </td>
+ 							 	</tr>
+								<tr>
+									{{review[3]}} 
+								</tr>
+							</table>
+						</li>
+					{% endfor %}
+					</ul>
+				</div>
+			</li>
+		</ul>
+	</div>
+
+
+	<h4 align="center">Course Information</h4>
+	<div class="row">
+		<ul class="collapsible" data-collapsible="accordian">
+			<li>
+				<div class="collapsible-header active"><i class="material-icons">add</i>Course Description</div>
+      				<div class="collapsible-body"><p>{{ CourseDescription }}</p></div>
+			</li>
+			<li>
+				<div class="collapsible-header"><i class="material-icons">add</i>Prerequisites</div>
+      				<div class="collapsible-body"><p>{{ Prerequisites }}</p></div>
+			</li>
+			<li>
+				<div class="collapsible-header"><i class="material-icons">add</i>Corequisites</div>
+      				<div class="collapsible-body"><p>{{ Corequisites }}</p></div>
+			</li>
+			<li>
+				<div class="collapsible-header"><i class="material-icons">add</i>Restrictions</div>
+      				<div class="collapsible-body">
+					<ul class="collection">
+					{% for i in Restrictions %}
+						<li class="collection-item">{{i}}</li>
+					{% endfor %}
+					</ul>
+				</div>
+			</li>
+			<li>
+				<div class="collapsible-header"><i class="material-icons">add</i>Attributes</div>
+      				<div class="collapsible-body">
+					<ul class="collection">
+					{% for i in Attributes %}
+						<li class="collection-item">{{i}}</li>
+					{% endfor %}
+					</ul>
+				</div>
+			</li>
+			<li> 
+				<div class = "collapsible-header"> <i class = "material-icons">add</i>Bookstore Textbook info</div>
+					<div class = "collapsible-body">
+						<ul class="collection" id = "Textbook-collection">
+  							<div class="progress" id = "progressBar">
+    						  <div class="indeterminate"></div>
+ 							</div>
+						</ul>
+					</div>
+
+			</li>
+			<li>
+				<div class="collapsible-header"><i class="material-icons">add</i>Registration</div>
+      		<div class="collapsible-body"> 
+      			<p> Maximum: {{Registration[0]}} <br> 
+      			Enrolled: {{Registration[1]}} <br>
+      			Remaining: {{Registration[2]}} <br> </p>
+      		</div>
+			</li>
+		</ul>
+	</div>
+</div>
+<script> 
+
+
+window.onload =  function(){
+	setTimeout(GetTextbookData)
+	
+};
+function GetTextbookData(){
+	var url = "/class_info/Textbook_info/{{Term}}-{{Department}}-{{Course_number}}-{{section}}"
+	var test = document.getElementById("Textbook-collection")
+
+	
+	$.ajax({
+		type: "POST",
+		url: url,
+		data: {},
+		contentType: 'application/json;charset=UTF-8',
+		success: function(data)
+		{
+				
+			var progressBar = document.getElementById('progressBar');
+			progressBar.parentNode.removeChild(progressBar);
+			if (data["Textbooks"].length == 0){
+				var noTextbooks = document.createElement('p');
+				noTextbooks.appendChild(document.createTextNode('No textbook information available at this time'));
+				test.appendChild(noTextbooks);
+			}
+			for (var i = 0; i < data["Textbooks"].length; i++){
+				Textbook = data["Textbooks"][i];
+				var newTextbook = document.createElement("li");
+				newTextbook.setAttribute("class", "collection-item");
+				
+
+
+				newTextbook.appendChild(document.createTextNode("Title: " + Textbook["title"]));
+				newTextbook.appendChild(document.createElement("br"));
+
+				newTextbook.appendChild(document.createTextNode("Author: " + Textbook["author"]));
+				newTextbook.appendChild(document.createElement("br"));
+
+				newTextbook.appendChild(document.createTextNode("Author: " + Textbook["isbn"]));
+				newTextbook.appendChild(document.createElement("br"));
+
+				amazonLink = document.createElement('a');
+				amazonLink.appendChild(document.createTextNode('Search for textbook on Amazon'));
+
+				amazonLink.setAttribute('href', 'http://www.amazon.com/gp/search/ref=sr_adv_b/?search-alias=stripbooks&unfiltered=1&field-keywords=&field-author=&field-title=&field-isbn=' + Textbook["isbn"] + '&field-publisher=&node=&field-p_n_condition-type=&p_n_feature_browse-bin=&field-subject=&field-language=&field-dateop=During&field-datemod=&field-dateyear=&sort=relevanceexprank&Adv-Srch-Books-Submit.x=47&Adv-Srch-Books-Submit.y=1');
+				amazonLink.setAttribute('target', "_blank");
+
+				newTextbook.appendChild(amazonLink);
+				newTextbook.appendChild(document.createElement("br"));
+				if (i < data["Required_textbook_info"].length){
+					TextbookTable = data["Required_textbook_info"][i];
+					newTextbook.appendChild(document.createTextNode("Required"));
+				}
+				else{
+					TextbookTable = data["Recommended_textbook_info"][i - data["Required_textbook_info"].length];
+					newTextbook.appendChild(document.createTextNode("Recommended"));
+
+				}
+
+				newTextbook.appendChild(document.createElement("br"));
+
+				newTable = document.createElement('table');
+				header = document.createElement('thead');
+				
+
+				headerRow = document.createElement('tr');
+
+				headerCol = document.createElement('th');
+				headerCol.appendChild(document.createTextNode("New/Used"));
+				headerRow.appendChild(headerCol);
+
+				headerCol = document.createElement('th');
+				headerCol.appendChild(document.createTextNode("Price"));
+				headerRow.appendChild(headerCol);
+
+				headerCol = document.createElement('th');
+				headerCol.appendChild(document.createTextNode("Buy/Rent"));
+				headerRow.appendChild(headerCol);
+
+				headerCol = document.createElement('th');
+				headerCol.appendChild(document.createTextNode("Type"));
+				headerRow.appendChild(headerCol);
+
+				header.appendChild(headerRow);
+				newTable.appendChild(header);
+
+				tableBody = document.createElement('tbody');
+				for (var j = 0; j < TextbookTable.length; j++){
+					newRow = document.createElement('tr');
+					var option = TextbookTable[j];
+
+					Col = document.createElement('td');
+					Col.appendChild(document.createTextNode(option["Option"]))
+					newRow.appendChild(Col);
+
+					Col = document.createElement('td');
+					Col.appendChild(document.createTextNode(option["Price"]))
+					newRow.appendChild(Col);
+
+					Col = document.createElement('td');
+					Col.appendChild(document.createTextNode(option["Buy/Rent"]))
+					newRow.appendChild(Col);
+
+					Col = document.createElement('td');
+					Col.appendChild(document.createTextNode(option["Type"]))
+					newRow.appendChild(Col);
+
+					tableBody.appendChild(newRow);
+
+				}
+				newTable.appendChild(tableBody);
+				newTextbook.appendChild(newTable);
+
+				test.appendChild(newTextbook);
+				
+
+			}
+
+		
+		},
+		error: function(data)
+		{
+			var progressBar = document.getElementById('progressBar');
+			progressBar.parentNode.removeChild(progressBar);
+			var noTextbooks = document.createElement('p');
+			noTextbooks.appendChild(document.createTextNode('No textbook information available at this time'));
+			test.appendChild(noTextbooks);
+		}
+	});
+};
+
+
+
+</script>
+
+
+  <!-- Modal Structure -->
+  <div id="modal1" class="modal">
+    <div class="modal-content row">
+      <form id="modal-form" class="col s12" method="POST">
+			<div class="row">
+				<div class="input-field col s12">
+					<input placeholder="123456789" id="phone_number" type="tel" class="validate" length="10">
+					<label for="phone_number">Phone Number:</label>
+				</div>
+				<input id="modal-crn" type="hidden" value="{{crn}}">
+			</div>
+			<div class="modal-footer">
+				<button id="modal-submit" class="modal-action modal-close waves-effect waves-green btn-flat">Submit</button>
+			</div>
+		</form>
+    </div>
+  </div>
+
+{% endblock %}

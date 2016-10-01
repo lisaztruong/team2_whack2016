@@ -1,0 +1,25 @@
+.padded {
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.centerButton {
+	margin: 0 auto;
+	display: block;
+}
+footer{
+height: 10px;
+    background-color: black;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+html,body
+{
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    overflow-x: hidden;
+}

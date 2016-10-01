@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+  
+{% block content %}
+<div>
+	<h5 class="center-align padded">Search By Department</h5>
+</div>
+<div class="row">
+	<div class="col s12 row">
+		<select class="browser-default" id="Department">
+			{% for key in DepartmentKeys %}
+				<option value = "{{key}}" > {{key}} </option>
+			{% endfor %}
+		</select>
+		<button type="button" class="col s4 offset-s4 padded btn btn-large blue lighten-2 waves-effect" onclick="GoToDepartment(document.getElementById('Department'));"> Search by Department </button>
+	</div>
+	<div class="col s12 row">
+		<h5 class="center-align">Or Search By a Professor's Name</h5>
+		<form id="searchForm2">
+			<div class="input-field col s12">
+				<input id="search2" type="text" required>
+				<label for="search2"><i class="material-icons">search</i></label>
+			</div>
+		</form>
+	</div>
+	<div id="SearchResults2" class="row col s12">
+		<ul class="collection col s12" id="ResultList2" style="display:None;">
+		</ul>
+	</div>
+</div>
+			
+
+
+{% endblock %}
