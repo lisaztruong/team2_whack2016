@@ -1,0 +1,97 @@
+{% extends "layout.html" %}
+  
+{% block content %}
+<h2 align = "center">{{ProfessorName}}</h2>
+<div class="row">
+	<button class="col s4 offset-s4 btn btn-large waves-effect blue lighten-2 " id="SubmitProfessorReview" onclick="location.href='/ProfessorReviewForm/{{ProfessorName}}'">Submit review for this Professor</button>
+</div>
+<p>{{ID}}</p>
+
+<div id="Sections">
+	<div class="row">
+		<h3 align="center"> Evaluations </h3>
+		<table class="striped">
+			<thead>
+				<tr>
+					<th data-field="Rating">Rating Category </th>
+					<th data-field="Score">Score (Higher is better)</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Grading</td>
+					<td>{% if grading %}{{grading}}{% else %}No Rating Yet{% endif %}</td>
+				</tr>
+				<tr>
+					<td>Quality</td>
+					<td>{% if quality %}{{quality}}{% else %}No Rating Yet{% endif %}</td>
+				</tr>
+				<tr>
+					<td>Workload</td>
+					<td>{% if workload %}{{workload}}{% else %}No Rating Yet{% endif %}</td>
+				</tr>
+				<tr>
+					<td>Accessibility</td>
+					<td>{% if accessibility %}{{accessibility}}{% else %}No Rating Yet{% endif %}</td>
+				</tr>
+				<tr> 
+					<td> Number of reviews: </td>
+					<td> {{ num_reviews }} </td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="row">
+		<ul class="collapsible" data-collapsible="accordian">
+			<li>
+				<div class="collapsible-header active"><i class="material-icons">add</i>Professor Reviews</div>
+      				<div class="collapsible-body">
+					<ul class="collection">
+					{% for review in Individual_Reviews %}
+						<li class="collection-item">
+							<table>
+								<tr>
+									<td> Workload: {{review[3]}} </td>
+									<td> Grading: {{review[4]}}  </td>
+									<td> Quality: {{review[5]}}  </td>
+									<td> Accessibility: {{review[6]}}  </td>
+									<td> Date: {{review[11]}} </td>
+									{% if review[12] %}
+										<td> Course: {{review[12]}} </td>
+									{% endif %}
+ 							 	</tr>
+								<tr>
+									{{review[2]}} 
+								</tr>
+							</table>
+						</li>
+					{% endfor %}
+					</ul>
+				</div>
+			</li>
+		</ul>
+	</div>
+	<div>
+		<h3 align="center">Courses Taught</h3>
+		<table class="centered striped">
+			<thead>
+				<tr>
+					<th date-field="Course">Course</th>
+					<th date-field="Semester">Semester Taught</th>
+					<th date-field="Title">Title</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for course in Courses %}
+				<tr> 
+					<td><a href = "/class_info/{{course[2]}}-{{course[3]}}-{{course[4]}}"> {{course[0]}}</a> </td> 
+					<td> {{course[1]}} </td>
+					<td> {{course[2]}} </td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+   	</div>
+</div>
+
+{% endblock %}

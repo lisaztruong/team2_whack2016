@@ -1,0 +1,118 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="row">
+	<form class="col s12 row" id="ClassSearchForm" method="post">
+		<div class="col s6">
+			<label>Term</label>
+			<select class="browser-default" id="TermOptions" name="TermOptions">
+				{% for key in TermOptionKeys %}
+				<option value='{{ TermOptions[key] }}'>{{key}}</option>
+				{% endfor %}
+			<script>
+				var index = document.getElementById('TermOptions').selectedIndex;
+				var text = document.getElementById('TermOptions')[index].textContent;
+				if ( text.indexOf("Fall Semester") === -1 && text.indexOf("Spring Semester") === -1) {
+					document.getElementById("TermOptions").selectedIndex = "1"
+				}
+			</script>
+			</select>
+		</div>
+		<div class="col s6 ">
+			<label>Division</label>
+			<select class="browser-default" id="DivisionOptions" name="DivisionOptions">
+				{% for key in DivisionOptionKeys %}
+   				<option value='{{DivisionOptions[key]}}'>{{key}}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div class="col s6">
+			<label>Campus</label>
+			<select class="browser-default" id="CampusOptions" name="CampusOptions">
+				{% for key in CampusOptionKeys %}
+   				<option {% if key == 'Main' %}selected="selected"{% endif %} value='{{CampusOptions[key]}}'>{{key}}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div class="col s6">
+			<label>Subject (Tip: begin typing subject to find the subject faster!!)</label>
+			<select class="browser-default" id="SubjectOptions" name="SubjectOptions">
+				<option value = "All"> All &nbsp &nbsp &nbsp(warning, may take some time to process) </option>
+				{% for key in SubjectOptionKeys %}
+   				<option value='{{SubjectOptions[key]}}'>{{key}}</option>
+				{% endfor %}
+				<script> document.getElementById("SubjectOptions").selectedIndex = "1";
+				</script>
+				</select>
+		</div>
+		<div class="col s6">
+			<label>Attribute</label>
+			<select class="browser-default" id="AttributeOptions" name="AttributeOptions">
+				{% for key in AttributeOptionKeys %}
+   				<option value='{{AttributeOptions[key]}}'>{{key}}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div class="col s6">
+			<label>Credits</label>
+			<select class="browser-default" id="CreditsOptions" name="CreditsOptions">
+				{% for key in CreditsOptionKeys %}
+   				<option {% if key == 'All' %}selected="selected"{% endif %}value='{{CreditsOptions[key]}}'>{{key}}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<input class="blue lighten-1 btn waves-effect padded" type="submit" value="Search Classes"></input>
+	</form>
+	<div class="col s6">
+			<label>Quick Search for University Requirements</label>
+			<select class="browser-default" id="QuickSearch" name="QuickSearch">
+				{% for key in ['1st Theology' , '1st Philosophy', '2nd Theology', '2nd Philosophy', 'Social Science', 'University Seminar (freshman)', 'Natural Science (req)', 'Fine Arts', 'Literature', 'History', "Sophomore Business Courses", "Junior Business Courses"] %}
+   				<option value='{{key}}'>{{key}}</option>
+				{% endfor %}
+			</select>
+		</div>
+</div>
+<div class = "row">
+	<input class="blue lighten-1 btn waves-effect padded" type="submit" value="Quick Search" onclick = "QuickSearch();"> </input>
+</div>
+<h5 align = "center"> Is your favorite class full? Use the "Watch Class" feature to get text alerts when a spot opens up in a course. Can be found by following class title link! Only available for courses in the upcoming semester </h5>
+<table border="1" class="table ClassData striped centered responsive-table" style = "overflow-y: scroll;">
+	<thead>
+        	<tr>
+			{% for key in Keys %}
+			{% if key != "Teacher_Info" %}
+			<th data-field="{{key}}">{{key}}</th>
+			{% endif %}
+			{% endfor %}
+        	</tr>
+        </thead>
+	<tbody>
+	{% for class in ClassList %}
+		<tr>
+			{% for i in Keys %}
+				{% if i == 'Title' %}
+					<td>  <a HREF ="/class_info/{{class[i]}}-{{class['CRN']}}-{{class['Term']}}" target="_blank"> {{class[i]}} </a> </td>
+				{% elif i == 'View_Books' %}
+					<td> <a href="{{class[i]}}" target="_blank" > View Books </a> </td>
+				{% elif i == 'Instructor' %}
+					<td>
+					{% if class[i] %}
+						{% for name in class[i] %}
+							<a href ="/instructor_info/{{name}}" target="_blank"> {{name}} </a> <br>
+						{% endfor %}
+					{% else %}
+						<p> TBA </p>
+					{% endif %}
+					</td>
+				{% elif i  == 'Teacher_Info' %}
+				{% else %}
+					<td> {{class[i]}} </td>
+				{% endif %}
+			{% endfor %}
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+
+</form>
+{% endblock %}

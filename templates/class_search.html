@@ -1,0 +1,90 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="row">
+	<h4 align="center">Standard Search</h4>
+	<form class="col s12 row" id="ClassSearchForm" method="post">
+		<div class="col s6">
+			<label>Term</label>
+			<select class="browser-default" id="TermOptions" name="TermOptions">
+				{% for key in TermOptionKeys %}
+				<option value='{{ TermOptions[key] }}'>{{key}}</option>
+				{% endfor %}
+				<script>
+				var index = document.getElementById('TermOptions').selectedIndex;
+				var text = document.getElementById('TermOptions')[index].textContent;
+				if ( text.indexOf("Fall Semester") === -1 && text.indexOf("Spring Semester") === -1) {
+					document.getElementById("TermOptions").selectedIndex = "1"
+				}
+				</script>
+
+			</select>
+		</div>
+		<div class="col s6">
+			<label>Division</label>
+			<select class="browser-default" id="DivisionOptions" name="DivisionOptions">
+				{% for key in DivisionOptionKeys %}
+   				<option value='{{DivisionOptions[key]}}'>{{key}}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div class="col s6">
+			<label>Campus</label>
+			<select class="browser-default" id="CampusOptions" name="CampusOptions">
+				{% for key in CampusOptionKeys %}
+   				<option {% if key == 'Main' %}selected="selected"{% endif %} value='{{CampusOptions[key]}}'>{{key}}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div class="col s6">
+			<label>Subject (Tip: begin typing subject to find the subject faster!!)</label>
+			<select class="browser-default" id="SubjectOptions" name="SubjectOptions">
+				<option value = "All"> All &nbsp &nbsp &nbsp(warning, may take some time to process) </option>
+				{% for key in SubjectOptionKeys %}
+   				<option value='{{SubjectOptions[key]}}'>{{key}}</option>
+				{% endfor %}
+				<script> document.getElementById("SubjectOptions").selectedIndex = "1";
+				</script>
+				</select>
+		</div>
+		<div class="col s6">
+			<label>Attribute</label>
+			<select class="browser-default" id="AttributeOptions" name="AttributeOptions">
+				{% for key in AttributeOptionKeys %}
+   				<option value='{{AttributeOptions[key]}}'>{{key}}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div class="col s6">
+			<label>Credits</label>
+			<select class="browser-default" id="CreditsOptions" name="CreditsOptions">
+				{% for key in CreditsOptionKeys %}
+   				<option {% if key == 'All' %}selected="selected"{% endif %}value='{{CreditsOptions[key]}}'>{{key}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	<div class="col s6 m6">
+		<input class="blue lighten-1 btn btn-large waves-effect padded" type="submit" onclick = "BeforePost();" value="Search Classes"> </input>
+	</div>
+	<div class="col s12 row">
+		<div class="divider"></div>
+		<h4 align="center">Search by University Requirement</h4>
+	</div>
+	</form>
+</div>
+<div class="row">
+	<div class="col s12">
+			<label>Quick Search for University Requirements </label>
+			<select class="browser-default" id="QuickSearch" name="QuickSearch">
+				{% for key in ['1st Theology' , '1st Philosophy', '2nd Theology', '2nd Philosophy', 'Social Science', 'University Seminar (freshman)', 'Natural Science (req)', 'Fine Arts', 'Literature', 'History', "Sophomore Business Courses", "Junior Business Courses"] %}
+   				<option value='{{key}}'>{{key}}</option>
+				{% endfor %}
+			</select>
+            <input class="blue lighten-1 btn btn-large waves-effect padded" type="submit" value="Quick Search" onclick = "QuickSearch();"> </input>
+
+	</div>
+</div>
+
+
+{% endblock %}
