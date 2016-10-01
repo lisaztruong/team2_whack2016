@@ -17,6 +17,8 @@ def set_up():
     c1.execute('CREATE TABLE t1_schools (school_id INTEGER PRIMARY KEY AUTOINCREMENT, school_name TEXT);')
     c1.execute('CREATE TABLE t2_ratings (rating_id INTEGER PRIMARY KEY AUTOINCREMENT, school_id, overall INTEGER, physical INTEGER, academic INTEGER, resources INTEGER, rating TEXT, FOREIGN KEY (school_id) REFERENCES t1_schools(school_id));')
 
+# For the schoolname inputted by the user, this function calculates the average ratings to make
+# sure we are not biased against few but high reviews of a certain school.
 def get_ratings(schoolname):
     command = 'SELECT school_id FROM t1_schools WHERE school_name = \"'+schoolname+'\";'
     for schooldata in c1.execute(command):
@@ -43,14 +45,16 @@ def get_ratings(schoolname):
     resources_average = resources_total/count
     return [overall_average, physical_average, academic_average, resources_average, ratings]
     
-    
+# Defaults scores below 0 to be 0 and scores higher than 10 to be 10 so that all scores are
+# within the range 0-10
 def put_in_range(score):
     if score > 10:
         return 10
     if score < 0:
         return 0
     return score    
-    
+
+# Interacts with the gui to allow users to input ratings for a school
 def add_rating(schoolname, overall, physical, academic, resources, rating):
     overall = put_in_range(overall)
     physical = put_in_range(physical)
@@ -60,7 +64,8 @@ def add_rating(schoolname, overall, physical, academic, resources, rating):
         school_id = schooldata[0]
     c1.execute('INSERT INTO "t2_ratings" (school_id, overall, physical, academic, resources, rating) VALUES (?,?,?,?,?,?)',
                (school_id, overall, physical, academic, resources, rating))
-    
+
+# commits (updates the database) then closes the connection
 c1.close()
 conn.commit()
 conn.close()
