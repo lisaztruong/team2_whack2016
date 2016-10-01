@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 	        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	        <title>Notre Dame Reviews</title>
+	        <title>College Accessibility Index</title>
 	        <meta name="description" content="Search for classes, view professors, and rate them all in a complete website for setting your Notre Dame class schedule">
 	        <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -15,12 +15,12 @@
     <div class = "navbar-fixed" >
 	<nav class="blue lighten-2">
 		<div class="nav-wrapper" style = "padding-left:5em;">
-		    <a href="/" class="brand-logo left">ND Reviews</a>
+		    <a href="/" class="brand-logo left">College Accessibility Index</a>
 			<a href="#" data-activates="mobile-nav" class="right button-collapse"><i class="material-icons">menu</i></a>
 			<ul class="right hide-on-med-and-down" style = "padding-left: 15%;" >
 				<li><a href="/SubmitReviewMain">View/Submit Reviews</a></li>
-				<li><a href="/class_search/">Search Classes</a></li>
-				<li><a href="/DepartmentsMain/">Departments</a></li>
+				<li><a href="/college_search/">Search Colleges</a></li>
+				<li><a href="/DepartmentsMain/">About Us</a></li>
 				<!-- <li><a href="/Textbooks/">Buy/Sell Textbooks</a></li> -->
 				<li style = "width :15%;">
 					<form id="searchForm">
@@ -33,8 +33,8 @@
 			</ul>
 			<ul class="side-nav blue lighten-3 " id="mobile-nav">
 				<li><a href="/SubmitReviewMain">View/Submit Reviews</a></li>
-				<li><a href="/class_search/">Search Classes</a></li>
-				<li><a href="/DepartmentsMain/">Departments</a></li>
+				<li><a href="/class_search/">Search Colleges</a></li>
+				<li><a href="/DepartmentsMain/">About</a></li>
 				<!-- <li><a href="/Textbooks/">Buy/Sell Textbooks</a></li> -->
             </ul>
 		</div>
@@ -47,8 +47,45 @@
 
 
 	<div style = "padding: 5%">
-			{% block content%}
-			{% endblock %}
+		<div class = "card teal lighten-3">
+		<div class = "card-content white-text center-align">
+			<span class ="card-title">
+			"Featured College:"
+			<br>
+			Wellesley College
+			</br>
+			</span>
+			<p>Overall rating: A-</p>
+			<p>Physical Campus: B <p>
+			<p>Academic Support: A </p>
+			<p> Resources: A-</p>
+			<br>
+		<a class ="btn waves-effect blue lighten-2" href="/CollegeReviewForm/Wellesley"> Review this College! </a>
+		<table>
+			<tbody>
+				<tr><tr>
+			</tbody>
+		</table>
+		</div>
+		</div>
+<div class = 'card lighten-2 recent_reviews col s12'>
+	<h3 align "center"> Recent College Reviews </h3>
+	<table class = "striped centered resposnive-table"></table>
+		<thread>
+			<tr>
+				<th data-field = "college_name"> College </th>
+				<th data-field = "overall grade"> Overall Grade </th>
+				<th data-field = "college_name"> Physical Campus Accessibility </th>
+				<th data-field = "college_name"> Academic Curriculum </th>
+				<th data-field = "college_name"> Student Resources </th>
+		</thread>
+		<tbody>
+			<tr>
+				<td><a href = "/college_info/Wellesley">Wellesley College>
+				
+	</div>
+	<br>
+	<br>
 	</div>
 
 	<footer class="page-footer blue lighten-2">
