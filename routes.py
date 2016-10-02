@@ -1,25 +1,16 @@
-'''
-from flask import Flask, render_template, request, jsonify, url_for, redirect, make_response, session
-
-from class_search_web_scrapping import GetTextBookInfo,GetCoursesTaught, GetAllProfessors, GetOptions, Sort_dict, GetClasses, GetSubjectsInDepartments, GetClassDescriptionAndAll, GetAllProfessorDepartments, Professors_No_Repeats
-from database_functions import *
-from TextbookDB import *
-
-from password import create_user, validate_user
-import requests
-import datetime
-'''
-
 # -*- coding: utf-8 -*-
 """
 Created on Sat Oct  1 16:22:03 2016
 
 @author: libbyaiello
 """
-from flask import render_template
+from flask import Flask, render_template
+app = Flask(__name__)
 import sqlite3
 conn = sqlite3.connect('schoolratings')
 c1 = conn.cursor()
+
+'''Functions that interface with database'''
 
 #don't call this unless you want to reset all the databases!!
 def set_up():
@@ -27,6 +18,11 @@ def set_up():
     c1.execute('DROP TABLE t2_ratings;')
     c1.execute('CREATE TABLE t1_schools (school_id INTEGER PRIMARY KEY AUTOINCREMENT, school_name TEXT);')
     c1.execute('CREATE TABLE t2_ratings (rating_id INTEGER PRIMARY KEY AUTOINCREMENT, school_id, overall INTEGER, physical INTEGER, academic INTEGER, resources INTEGER, rating TEXT, FOREIGN KEY (school_id) REFERENCES t1_schools(school_id));')
+
+def number_of_schools():
+    for item in c1.execute('SELECT COUNT(*) FROM t1_schools'):
+        return item[0]
+    return 0
 
 # For the schoolname inputted by the user, this function calculates the average ratings for each category for this school
 def get_avg_ratings(schoolname):
@@ -73,6 +69,8 @@ def get_ratings(schoolname):
     return ratings
     
 categories = {'overall':0, 'physical':1, 'academic':2, 'resources':3}
+categories_reverse = {0:'overall', 1:'physical', 2:'academic', 3:'resources'}
+
 
 #this function takes in a category to sort by and returns a list of schools in descending order of their rankings in this category
 def get_rankings(category):
@@ -105,10 +103,20 @@ def add_rating(schoolname, overall, physical, academic, resources, rating):
                (school_id, overall, physical, academic, resources, rating))
 
 def get_random_school():
-    rankings = get_rankings(physical)
+    rankings = get_rankings('physical')
     import random
     rand = random.randint(0,len(rankings))
     return rankings[rand]
+
+'''Now interfacing with javascript'''
+
+'''Lists of pages:
+-- '/' = home
+-- '/search/<query>/' = search result page --> query might pull up multiple schools (if not finished, or might say not found, or forwards to schoolname page)
+-- '/<schoolname>' = school homepage --> shows averages of ratings on top, and all ratings below
+-- '/bestSchoolsFor/<page>' = list of rankings of schools for specific category (page is an integer 0 - 3)
+-- '/schoolReviewForm/' = page where you can fill out a review for a school.
+'''
 
 @app.route('/')
 def home():
@@ -119,38 +127,34 @@ def home():
     physical_rating = featured_school[1][1]
     academic_rating = featured_school[1][2]
     resources_rating = featured_school[1][3]
-    return render_template('home.html', school_name = school_name, workload_rating = workload_rating,
-        overall_rating = overall_rating, physical_rating = physical_rating, academic_rating = academic_rating,
-        resources_rating = resources_rating)
+    num_of_schools = number_of_schools()
+    return render_template('home.html', num_of_schools, school_name = school_name, overall_rating = overall_rating,
+        physical_rating = physical_rating, academic_rating = academic_rating, resources_rating = resources_rating)
 
 @app.route('/search/<query>/', methods=['POST'])
 def Search(query):
+    
     ratings = get_ratings(query.lower())
     return render_template('search.html', query.lower(), ratings) #ratings is a list with overall, physical, academic, resources, rating_id
 
-
-@app.route('/schoolname/')
+@app.route('/<schoolname>/')
 def School(schoolname):
-    #need to determine from templates
-    return render_template('instructor_info.html', Individual_Reviews = Individual_Reviews,Courses=RevisedCoursesTaught,
-                               ProfessorName=ProfessorName,num_reviews = num_reviews,
-                                workload=convert_num_to_letter_grade(workload), grading=convert_num_to_letter_grade(grading), quality=convert_num_to_letter_grade(quality),
-                               accessibility=convert_num_to_letter_grade(accessibility))
+    schoolname = schoolname.lower()
+    #should return all reviews, and have a header with the average reviews.
+    avg_ratings = get_avg_ratings(schoolname)
+    all_ratings = get_ratings(schoolname)
+    return render_template('school_info.html', schoolname, avg_ratings, all_ratings) #avg_ratings/all_ratings good have size 0 if no reviews yet
 
-categories_reverse = {0:'overall', 1:'physical', 2:'academic', 3:'resources'}
-
-@app.route('/BestSchoolsFor/<page>', methods=['GET', 'POST']) #is this how i add the page value?
+@app.route('/bestSchoolsFor/<page>', methods=['GET', 'POST']) #is this how i add the page value?
 def bestSchoolsFor(page):
     category = categories_reverse[page]
     rankings = get_rankings(category) # formatted as schoolname, value for specific category
-    #maybe enable ability to get to that school's page by clicking on the schoolname.
-    
     return render_template('bestSchoolsFor.html', category, rankings) #category name should go on the top of the page, rankings should be displayed in table (schoolname is a link to school page)
 
 import request
-#how do we set this up so that the school is not predetermined - it is an input
-@app.route('/SchoolReviewForm/', methods=['GET', 'POST'])
-def SchoolReview(schoolname):
+@app.route('/schoolReviewForm/', methods=['GET', 'POST'])
+def SchoolReview():
+    #def SchoolReview(schoolname):
     #for posting school review
     if request.method == 'POST':
         #get info from form
@@ -171,7 +175,6 @@ def SchoolReview(schoolname):
 
 if __name__ == '__main__':
     app.run()
-
 # commits (updates the database) then closes the connection
 c1.close()
 conn.commit()
