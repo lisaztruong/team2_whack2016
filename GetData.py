@@ -48,10 +48,13 @@ categories = {'overall':0, 'physical':1, 'academic':2, 'resources':3}
 
 def get_rankings(category):
     rankings = []
+    #get all of the rankings
     for schooldata in c1.execute('SELECT school_name FROM t1_schools;'):
         schoolname = schooldata[0]
         rankings.append((schoolname, get_ratings(schoolname)[categories[category]]))
-    #now sort 
+    #use lambda function to sort in descending order by x[1]
+    return sorted(rankings, key = lambda x: x[1], reverse = True)
+    
 
 # Defaults scores below 0 to be 0 and scores higher than 10 to be 10 so that all scores are
 # within the range 0-10
