@@ -16,7 +16,7 @@ Created on Sat Oct  1 16:22:03 2016
 
 @author: libbyaiello
 """
-
+from flask import render_template
 import sqlite3
 conn = sqlite3.connect('schoolratings')
 c1 = conn.cursor()
@@ -104,11 +104,6 @@ def add_rating(schoolname, overall, physical, academic, resources, rating):
     c1.execute('INSERT INTO "t2_ratings" (school_id, overall, physical, academic, resources, rating) VALUES (?,?,?,?,?,?)',
                (school_id, overall, physical, academic, resources, rating))
 
-# commits (updates the database) then closes the connection
-c1.close()
-conn.commit()
-conn.close()
-
 def get_random_school():
     rankings = get_rankings(physical)
     import random
@@ -130,8 +125,8 @@ def home():
 
 @app.route('/search/<query>/', methods=['POST'])
 def Search(query):
-    return get_ratings(query.lower()) #we can format it from the javascript file
-    #OR SHOULD THIS FORWARD TO A SCHOOL PAGE?
+    ratings = get_ratings(query.lower())
+    return render_template('search.html', query.lower(), ratings) #ratings is a list with overall, physical, academic, resources, rating_id
 
 
 @app.route('/schoolname/')
@@ -142,91 +137,42 @@ def School(schoolname):
                                 workload=convert_num_to_letter_grade(workload), grading=convert_num_to_letter_grade(grading), quality=convert_num_to_letter_grade(quality),
                                accessibility=convert_num_to_letter_grade(accessibility))
 
+categories_reverse = {0:'overall', 1:'physical', 2:'academic', 3:'resources'}
 
-@app.route('/BestClassesFor/', methods=['GET', 'POST'])
-def BestClassesFor(page=1):
-    # Dummy list until we can access classes from database
-    if page == 1:
-        Attributes = {'2nd Theology':'THE2', '2nd Philosophy':'PHI2', 'Social Science': 'SOSC', 'Natural Science (req)': 'NASC'}
-    elif page == 2:
-        Attributes = {'Fine Arts':'FNAR', 'Literature':'LIT', 'History': 'HIST'}
-    ClassList = []
-    if page == 1:
-        SubjectsSorted = ['2nd Theology', '2nd Philosophy', 'Social Science', 'Natural Science (req)']
-    elif page == 2:
-        SubjectsSorted = ['Fine Arts', 'Literature', 'History']
-    Indexs = range(len(SubjectsSorted))
-    for attr in SubjectsSorted:
-        courses = GetClasses('201510', Options[3].values(), 'A', Attributes[attr], 'A', 'M')
-        course_container = []
-        for i in courses:
-            course_container.append([i['Title'], i['CRN'], i['Term']])
-        ClassList.append(course_container)
+@app.route('/BestSchoolsFor/<page>', methods=['GET', 'POST']) #is this how i add the page value?
+def bestSchoolsFor(page):
+    category = categories_reverse[page]
+    rankings = get_rankings(category) # formatted as schoolname, value for specific category
+    #maybe enable ability to get to that school's page by clicking on the schoolname.
+    
+    return render_template('bestSchoolsFor.html', category, rankings) #category name should go on the top of the page, rankings should be displayed in table (schoolname is a link to school page)
 
-    return render_template('BestClassesFor.html', Subjects=Attributes, SubjectsSorted=SubjectsSorted, Courses=ClassList, Indexs=Indexs)
-
-@app.route('/ProfessorReviewForm/<ProfessorName>', methods=['GET', 'POST'])
-def ProfessorReview(ProfessorName):
-    #do i need all of these?
+import request
+#how do we set this up so that the school is not predetermined - it is an input
+@app.route('/SchoolReviewForm/', methods=['GET', 'POST'])
+def SchoolReview(schoolname):
+    #for posting school review
     if request.method == 'POST':
-        # Instructor evaluation
-        CourseName = ' '.join(request.form['CoursesTaughtID'].split(' ')[:-3])
-        CRN = ''.join(request.form['CoursesTaughtID'].split(' ')[-3])
-        Term = ''.join(request.form['CoursesTaughtID'].split(' ')[-2])
-        department = [request.form['CoursesTaughtID'].split(' ')[-1]]
-        Grading = int(request.form['GradingID'])
-        Quality = int(request.form['QualityID'])
-        Workload = int(request.form['WorkloadID'])
-        Accessibility = request.form['AccessibilityID']
-        Syllabus = int(request.form['SyllabusID'])
-        OptionalDescriptionProfessor = str(request.form['OptionalResponseProfessor']) + "Course:::" + str(CourseName)
+        #get info from form
+        schoolname = request.form['schoolname']
+        overall = request.form['overall']
+        physical = request.form['physical']
+        academic = request.form['academic']
+        resources = request.form['resources']
+        rating = request.form['rating']
+        
+        #add to database!
+        add_rating(schoolname, overall, physical, academic, resources, rating)
 
-
-        # Course Evaluation
-        CourseToughness = int(request.form['ToughnessID'])
-        CourseInterest = int(request.form['InterestID'])
-        TextbookNeeded = int(request.form['TextbookNeeded'])
-        OptionalDescriptionCourse = str(request.form['OptionalResponseCourse'])
-
-        # Add to database
-        last_name = str(ProfessorName.split(',')[0]) + ','
-        first_name = str(ProfessorName.split(',')[1])
-
-
-        date = datetime.datetime.now()
-        date_string = str(date.year) + " " + str(date.month) + " " + str(date.day)
-
-        if session.get('username'):
-            username = session['username']
-        else:
-            username = "Unknown user"
-        addProfReview(last_name, first_name, OptionalDescriptionProfessor, Workload, Grading, Quality, Accessibility, Syllabus, department, Professors[last_name + first_name], username, date_string)
-        addClassReview(last_name, first_name, CourseName, OptionalDescriptionCourse, CourseToughness, CourseInterest, TextbookNeeded, department, CRN, Term, Professors[last_name + first_name], username, date_string)
         return render_template('PostSubmissionForm.html', test=' ')
-
-    try:
-        CoursesTaught = GetCoursesTaught(Professors[ProfessorName])
-    except KeyError:
-        CoursesTaught = ["No courses listed"]
-
-    num_items = len(CoursesTaught[0]) - 1
-    RevisedCoursesTaught = []
-    for i in xrange(len(CoursesTaught)):
-        if i != 0:
-            if (CoursesTaught[i][2] != CoursesTaught[i-1][2]) or (CoursesTaught[i][num_items] != CoursesTaught[i-1][num_items]):
-                RevisedCoursesTaught.append(CoursesTaught[i])
-        else:
-            RevisedCoursesTaught.append(CoursesTaught[i])
-    return render_template('ProfessorReviewForm.html' ,ProfessorName=ProfessorName, CoursesTaught=RevisedCoursesTaught, num_items = num_items)
-
-@app.route('/SubmitReviewMain/')
-def SubmitReviewMain():
-    ProfessorKeys = Sorted_Profs_No_Repeats
-    ProfessorKeys = [i.decode('utf-8') for i in ProfessorKeys]
-    return render_template('SubmitReviewMain.html',
-                           DepartmentKeys=Sort_dict(Options[3], False),
-                           DepartmentOptions=Options[3],
-                           Professors=Professors, ProfessorKeys=ProfessorKeys)
+        
+    #for getting school review
+    return School(schoolname)    
 
 if __name__ == '__main__':
     app.run()
+
+# commits (updates the database) then closes the connection
+c1.close()
+conn.commit()
+conn.close()
