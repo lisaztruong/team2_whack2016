@@ -50,15 +50,12 @@
 		<div class = "card teal lighten-3">
 		<div class = "card-content white-text center-align">
 			<span class ="card-title">
-			"Featured College:"
-			<br>
-			Wellesley College
-			</br>
-			</span>
-			<p>Overall rating: A-</p>
-			<p>Physical Campus: B <p>
-			<p>Academic Support: A </p>
-			<p> Resources: A-</p>
+			"Featured College:" 
+			<h4 id = "featNAME"></h4>
+			<p>Overall rating: <span id = 'featCLGOVRL'></span></p>
+			<p>Physical Campus: <span id= 'featCLGPHYS'></span><p>
+			<p>Academic Support: <span id = 'featCLGAC'></span></p>
+			<p> Resources: <span id = 'featCLGRES'></span></p>
 			<br>
 		<a class ="btn waves-effect blue lighten-2" href="/CollegeReviewForm/Wellesley"> Review this College! </a>
 		<table>
@@ -70,19 +67,22 @@
 		</div>
 <div class = 'card lighten-2 recent_reviews col s12'>
 	<h3 align "center"> Recent College Reviews </h3>
-	<table class = "striped centered resposnive-table"></table>
+	<table class = "striped centered resposnive-table">
 		<thread>
 			<tr>
-				<th data-field = "college_name"> College </th>
-				<th data-field = "overall grade"> Overall Grade </th>
-				<th data-field = "college_name"> Physical Campus Accessibility </th>
-				<th data-field = "college_name"> Academic Curriculum </th>
-				<th data-field = "college_name"> Student Resources </th>
+				<th data-field = "college_name"> College Name:</th>
+
+				<th data-field = "overall grade"> Overall Grade</th> 
+				<th data-field = "college_name"> Physical Campus Accessibility</th> 
+				<th data-field = "college_name"> Academic Curriculum</th>
+				<th data-field = "college_name"> Student Resources :</th> 
+			</tr>
 		</thread>
-		<tbody>
-			<tr>
-				<td><a href = "/college_info/Wellesley">Wellesley College>
-				
+		<tbody id = "recent">
+		</tbody>
+		</table>
+			
+
 	</div>
 	<br>
 	<br>
@@ -103,5 +103,6 @@
 	<script src= "../static/JS/JSscripts.js"></script>
 	<script src= "../static/JS/searchAjax.js"></script>
 	<script src= "../static/JS/formAjax.js"></script>
+	<script src= "schoolgenerator.js"></script>
 	</body>
 </html>

@@ -1,0 +1,47 @@
+var samplecollegesDict = {
+  wellesley: {name: "Wellesley", overall: '6.5/10', physicalrating: '4/10', academicsupport: '6/10', resources: '8/10'},
+  mit: {name: "MIT", overall: '9/10', physicalrating: '8/10', academicsupport: '10/10', resources: '9/10'},
+  olin: {name: "Olin", overall: '6/10', physicalrating: '4/10', academicsupport: '6/10', resources: '8/10'},
+  babson: {name: "Babson", overall: '7/10', physicalrating: '7/10', academicsupport: '6/10', resources: '8/10'},
+  northeastern:{name: "Northeastern", overall: '5/10', physicalrating: '4/10', academicsupport: '6/10', resources: '5/10'},
+  tufts: {name: "Tufts", overall: '9/10', physicalrating: '8/10', academicsupport: '10/10', resources: '9/10'}
+};
+
+var samplecolleges = [{name: "Wellesley", overall: '6.5/10', physicalrating: '4/10', academicsupport: '6/10', resources: '8/10'},
+  {name: "MIT", overall: '9/10', physicalrating: '8/10', academicsupport: '10/10', resources: '9/10'},
+  {name: "Olin", overall: '6/10', physicalrating: '4/10', academicsupport: '6/10', resources: '8/10'},
+  {name: "Babson", overall: '7/10', physicalrating: '7/10', academicsupport: '6/10', resources: '8/10'},
+  {name: "Northeastern", overall: '5/10', physicalrating: '4/10', academicsupport: '6/10', resources: '5/10'},
+  {name: "Tufts", overall: '9/10', physicalrating: '8/10', academicsupport: '10/10', resources: '9/10'}]
+
+
+function setFeaturedCollege(college){
+	var featuredDiv = document.getElementById('featuredCLG');
+	var innerDiv = document.createElement("div");
+
+	innerDiv.id = 'featCLGObj';
+
+	var collegename = document.createElement("span");
+	console.log('college name : ' + college.name);
+	collegename.innerHTML = college.name;
+
+	innerDiv.appendChild(collegename);
+
+	featuredDiv.appendChild(innerDiv);
+};
+
+function newFeaturedCollege() {
+	//Gets current featured college
+	//sets the object variables to that of one of the sample
+	//while (ranIdx == 0){
+		var ranidx = Math.abs(Math.floor((Math.random() * 10) - 4));
+	//}
+	console.log('index : ' + ranidx);
+	var featuredCollege = samplecolleges[ranidx];
+	console.log(featuredCollege);
+
+	setFeaturedCollege(featuredCollege);
+};
+
+
+newFeaturedCollege();
