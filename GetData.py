@@ -57,23 +57,10 @@ def get_rankings(category):
         rankings.append((schoolname, get_ratings(schoolname)[categories[category]]))
     #use lambda function to sort in descending order by x[1]
     return sorted(rankings, key = lambda x: x[1], reverse = True)
-    
-
-# Defaults scores below 0 to be 0 and scores higher than 10 to be 10 so that all scores are
-# within the range 0-10
-def put_in_range(score):
-    if score > 10:
-        return 10
-    if score < 0:
-        return 0
-    return score    
+  
 
 # Interacts with the gui to allow users to input ratings for a school
 def add_rating(schoolname, overall, physical, academic, resources, rating):
-    overall = put_in_range(overall)
-    physical = put_in_range(physical)
-    academic = put_in_range(academic)
-    resources = put_in_range(resources)
     school_id = 0
     #if the school already exists in t1_schools, pull up it's school_id
     for schooldata in c1.execute('SELECT school_id FROM t1_schools WHERE school_name = "'+schoolname+'";'):
