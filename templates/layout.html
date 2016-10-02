@@ -10,6 +10,57 @@
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/mainCSS.css') }}">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/css/materialize.min.css">
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<style>
+			.ui-dialog{
+				z-index: 90000;
+				padding: 7px;
+				background-color: white;
+				border-style: 3px solid #e8f0ff;
+				border-color: gray;
+				border-radius: 4px;
+				opacity: 1.0;
+			}
+
+			#dialog-form{
+				overflow-y: scroll;
+				border-radius: 4px;
+				border-style: 3px;
+				border-color: gray;
+			}
+			/*
+			form{
+				border-radius: 3px;
+				background-color: white;
+				border-style: 3px solid;
+				border-color: silver;
+			}*/
+
+			.ui-dialog-titlebar-close {
+				position: absolute;
+				padding: 5px;
+				right: 10px;
+				border-radius: 3px;
+
+			}
+			#ui-id-1 {
+				align-self: center;
+				text-align: center;
+				margin: auto;
+				padding-left: 10px;
+				font-size: 15px;
+				font-style: bold;
+
+			}
+
+			#newReviewNAV:active{
+				overflow:hidden;
+				background-color: white 0.0;
+			}
+			#newReviewNAV:active{
+				overflow: hidden;
+			}
+
+		</style>
 	</head>
 	<body>
     <div class = "navbar-fixed" >
@@ -20,6 +71,7 @@
 			<ul class="right hide-on-med-and-down" style = "padding-left: 15%;" >
 			  <!--
 				<li><a href="/SubmitReviewMain">View/Submit Reviews</a></li>
+				<li><button id="newReviewNAV">View/Submit Reviews</button></li>
 				<li><a href="/college_search/">Search Colleges</a></li>
 				<li><a href="/DepartmentsMain/">About Us</a></li>
 				<!-- <li><a href="/Textbooks/">Buy/Sell Textbooks</a></li> 
@@ -34,7 +86,7 @@
 			</ul>-->
 			<!--
 			<ul class="side-nav blue lighten-3 " id="mobile-nav">
-				<li><a href="/SubmitReviewMain">View/Submit Reviews</a></li>
+				<li><button id="newReviewNAV">View/Submit Review</button></li>
 				<li><a href="/class_search/">Search Colleges</a></li>
 				<li><a href="/DepartmentsMain/">About</a></li>
 				<!-- <li><a href="/Textbooks/">Buy/Sell Textbooks</a></li> 
@@ -45,6 +97,25 @@
 		</ul>
 		</div>
 	</nav>
+	</div>
+
+
+	<div id="dialog-form" title="">
+		<span style: "text-align: center; margin: auto;">
+	 	<h5> New Review</h5>
+	    <p class="validateTips" style: "font-size: 10px;">All form fields are required.</p>
+	    </span>
+	 
+	  <form>
+	    <fieldset>
+	      <label for="name">College</label>
+	      <input type="text" name="clgnamefrm" id="clgnamefrm" value="ex. 'Harvard'" class="text ui-widget-content ui-corner-all">
+	      <label for="overall">Overall Rating</label>
+	      <input type="text" name="overallfrm" id="overallfrm" value="ex. '6/10'" class="text ui-widget-content ui-corner-all">
+	      <!-- Allow form submission with keyboard without duplicating the dialog button -->
+	      <input class ="btn waves-effect blue lighten-2" type="submit" tabindex="-1" style: "margin: auto;">
+	    </fieldset>
+	  </form>
 	</div>
 
 
@@ -105,6 +176,8 @@
 	<script src= "../static/JS/JSscripts.js"></script>
 	<script src= "../static/JS/searchAjax.js"></script>
 	<script src= "../static/JS/formAjax.js"></script>
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script> <!-- This and the next are modal box jquery --> 
+ 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	<script src= "schoolgenerator.js"></script>
 	</body>
 </html>
