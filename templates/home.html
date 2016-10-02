@@ -6,9 +6,9 @@
 <div class="col s12">
       <div class="card light-green lighten-2">
         <div class="card-content white-text center-align">
-          <span class="card-title"> <h4> Welcome to ND Reviews </h4> </span>
+          <span class="card-title"> <h4> Welcome to Accessibility Index </h4> </span>
           <p># of reviews: {{review_count}} </p> <br>
-          <button class="btn waves-effect blue lighten-2 " onclick="location.href='/SubmitReviewMain'"> Add Your Own Review! </button>
+<!--  <button class="btn waves-effect blue lighten-2 " onclick="location.href='/SubmitReviewMain'"> Add Your Own Review! </button> -->
 
           </div>
         </div>
@@ -16,45 +16,13 @@
 <div class="col s12" style = "padding-bottom:5%;">
     <div class="card teal lighten-3">
         <div class="card-content white-text center-align">
-            <span class="card-title"> Featured Professor: <br> {{prof_name}}  <br> </span>
-                <p> workload: {{workload_rating}} </p>
-                <p> grading: {{grading_rating}} </p>
-                <p> quality: {{quality_rating}} </p>
-                <p> accessibility: {{accessibility_rating}} </p> <br>
-                <table>
-                  <tr>
-                   <a class="btn waves-effect blue lighten-2 " href='/ProfessorReviewForm/{{last_name + first_name}}'> Review this professor! </a>
-                  </tr>
-                </table>
+            <span class="card-title"> Featured School: <br> {{school_name}}  <br> </span>
+                <p> overall: {{overall_rating}} </p>
+                <p> physical: {{physical_rating}} </p>
+                <p> academic: {{academic_rating}} </p>
+                <p> resources: {{resources_rating}} </p> <br>
         </div>
     </div>
-  </div>
-  <div class="card lighten-2 recent_reviews col s12 ">
-    <h3 align="center">Recent professor reviews</h3>
-   <table class="striped centered responsive-table">
-     <thead>
-       <tr>
-         <th data-field="prof_name">Name</th>
-         <th data-filed="prof_workload">Workload</th>
-         <th data-field="prof_grading">Grading</th>
-         <th data-field="prof_quality">Quality</th>
-         <th data-field="prof_accessibility">Accessibilty</th>
-       </tr>
-     </thead>
-
-     <tbody>
-      {% for i in range(num_recent_reviews) %}
-          <tr>
-            <td> <a href = "/instructor_info/{{recent_reviews[i][0] + recent_reviews[i][1]}}"> {{prof_names[i]}}</a></td>
-            <td> {{recent_reviews[i][3]}}</td>
-            <td> {{recent_reviews[i][4]}}</td>
-            <td> {{recent_reviews[i][5]}}</td>
-            <td> {{recent_reviews[i][6]}}</td>
-
-          </tr>
-      {% endfor %}
-      </tbody>
-   </table>
   </div>
 <br>
 <br>
