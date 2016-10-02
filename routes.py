@@ -4,7 +4,7 @@ Created on Sat Oct  1 16:22:03 2016
 
 @author: libbyaiello
 """
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 app = Flask(__name__)
 import sqlite3
 conn = sqlite3.connect('schoolratings')
@@ -128,7 +128,7 @@ def home():
     academic_rating = featured_school[1][2]
     resources_rating = featured_school[1][3]
     num_of_schools = number_of_schools()
-    return render_template('home.html', num_of_schools, school_name = school_name, overall_rating = overall_rating,
+    return render_template('home.html', num_of_schools = num_of_schools, school_name = school_name, overall_rating = overall_rating,
         physical_rating = physical_rating, academic_rating = academic_rating, resources_rating = resources_rating)
 
 @app.route('/search/<query>/', methods=['POST'])
@@ -151,7 +151,6 @@ def bestSchoolsFor(page):
     rankings = get_rankings(category) # formatted as schoolname, value for specific category
     return render_template('bestSchoolsFor.html', category, rankings) #category name should go on the top of the page, rankings should be displayed in table (schoolname is a link to school page)
 
-import request
 @app.route('/schoolReviewForm/', methods=['GET', 'POST'])
 def SchoolReview():
     #def SchoolReview(schoolname):
