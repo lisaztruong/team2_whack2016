@@ -27,9 +27,12 @@ def number_of_schools():
 # For the schoolname inputted by the user, this function calculates the average ratings for each category for this school
 def get_avg_ratings(schoolname):
     schoolname = schoolname.lower()
+    school_id = 0
     command = 'SELECT school_id FROM t1_schools WHERE school_name = \"'+schoolname+'\";'
     for schooldata in c1.execute(command):
         school_id = schooldata[0]
+    if school_id == 0:
+        return []
     count = 0.0
     overall_total   = 0
     physical_total  = 0
@@ -47,7 +50,7 @@ def get_avg_ratings(schoolname):
         rating             =  data[5]
         ratings[rating_id] =  rating
     if count == 0:
-        return None
+        return []
     overall_average   = overall_total/count
     physical_average  = physical_total/count
     academic_average  = academic_total/count
@@ -71,7 +74,6 @@ def get_ratings(schoolname):
 categories = {'overall':0, 'physical':1, 'academic':2, 'resources':3}
 categories_reverse = {0:'overall', 1:'physical', 2:'academic', 3:'resources'}
 
-
 #this function takes in a category to sort by and returns a list of schools in descending order of their rankings in this category
 def get_rankings(category):
     category = category.lower()
@@ -79,10 +81,9 @@ def get_rankings(category):
     #get all of the rankings
     for schooldata in c1.execute('SELECT school_name FROM t1_schools;'):
         schoolname = schooldata[0]
-        rankings.append((schoolname, get_ratings(schoolname)[categories[category]]))
+        rankings.append((schoolname, get_avg_ratings(schoolname)[categories[category]]))
     #use lambda function to sort in descending order by x[1]
     return sorted(rankings, key = lambda x: x[1], reverse = True)
-  
 
 # Interacts with the gui to allow users to input ratings for a school
 def add_rating(schoolname, overall, physical, academic, resources, rating):
@@ -101,6 +102,7 @@ def add_rating(schoolname, overall, physical, academic, resources, rating):
     #add this rating into t2_ratings
     c1.execute('INSERT INTO "t2_ratings" (school_id, overall, physical, academic, resources, rating) VALUES (?,?,?,?,?,?)',
                (school_id, overall, physical, academic, resources, rating))
+    c2.close()
 
 def get_random_school():
     rankings = get_rankings('physical')
@@ -130,26 +132,31 @@ def home():
     num_of_schools = number_of_schools()
     return render_template('home.html', num_of_schools = num_of_schools, school_name = school_name, overall_rating = overall_rating,
         physical_rating = physical_rating, academic_rating = academic_rating, resources_rating = resources_rating)
+    #home.html should use variables num_of_schools, school_name, overall_rating, physical_rating, academic_rating, resources_rating
 
 @app.route('/search/<query>/', methods=['POST'])
 def Search(query):
-    
+    return School(query) #for now, until we can implement more advanced searching, such as finding schools that contain query string
+    '''
     ratings = get_ratings(query.lower())
     return render_template('search.html', query.lower(), ratings) #ratings is a list with overall, physical, academic, resources, rating_id
+    '''
 
 @app.route('/<schoolname>/')
 def School(schoolname):
     schoolname = schoolname.lower()
     #should return all reviews, and have a header with the average reviews.
-    avg_ratings = get_avg_ratings(schoolname)
-    all_ratings = get_ratings(schoolname)
+    avg_ratings = get_avg_ratings(schoolname) #could be [] if there were no reviews/if this school has not been reviewed yet.
+    all_ratings = get_ratings(schoolname) #could be [] if there were no reviews/if this school has not been reviewed yet.
     return render_template('school_info.html', schoolname, avg_ratings, all_ratings) #avg_ratings/all_ratings good have size 0 if no reviews yet
-
+    #school_info.html should use variables schoolname, avg_ratings, all_ratings    
+    
 @app.route('/bestSchoolsFor/<page>', methods=['GET', 'POST']) #is this how i add the page value?
 def bestSchoolsFor(page):
     category = categories_reverse[page]
     rankings = get_rankings(category) # formatted as schoolname, value for specific category
     return render_template('bestSchoolsFor.html', category, rankings) #category name should go on the top of the page, rankings should be displayed in table (schoolname is a link to school page)
+    #bestSchoolsFor.html should use variables category (to put on top of page), rankings (pairs of college name and score)
 
 @app.route('/schoolReviewForm/', methods=['GET', 'POST'])
 def SchoolReview():
