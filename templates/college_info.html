@@ -1,9 +1,9 @@
 {% extends "layout.html" %}
   
 {% block content %}
-<h2 align = "center">{{ProfessorName}}</h2>
+<h2 align = "center">{{schoolname}}</h2>
 <div class="row">
-	<button class="col s4 offset-s4 btn btn-large waves-effect blue lighten-2 " id="SubmitProfessorReview" onclick="location.href='/ProfessorReviewForm/{{ProfessorName}}'">Submit review for this Professor</button>
+	<button class="col s4 offset-s4 btn btn-large waves-effect blue lighten-2 " id="SubmitProfessorReview" onclick="location.href='/ProfessorReviewForm/{{ProfessorName}}'">Submit review for this School</button>
 </div>
 <p>{{ID}}</p>
 

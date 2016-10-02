@@ -67,6 +67,33 @@ function makeTable(){
 	}
 }
 
+dialog = $( "#dialog-form" ).dialog({
+      autoOpen: false,
+      height: 400,
+      width: 350,
+      modal: true,
+      /*buttons: {
+        "New Review": addUser,
+        Cancel: function() {
+          dialog.dialog( "close" );
+        }
+      },*/
+      close: function() {
+        form[ 0 ].reset();
+        allFields.removeClass( "ui-state-error" );
+      }
+    });
+ 
+    form = dialog.find( "form" ).on( "submit", function( event ) {
+      event.preventDefault();
+      //addUser();
+    });
+ 
+    $( "#newReviewNAV" ).button().on( "click", function() {
+      dialog.dialog( "open" );
+    });
+
+
 
 newFeaturedCollege();
 makeTable();
