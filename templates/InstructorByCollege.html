@@ -6,19 +6,19 @@
 <h2 align = "middle"> {{College}} </h2>
 <table>
 	<tr>
-		<td> Departments: </td>
-		<td> TeacherList: </td>
+		<td> Physical Campus Accessibility: </td>
+		<td> Academic Accomodations: </td>
 	</tr>
 	<tr>
-		<td> <select class="browser-default" id="AllDepartments">
-			{% for department in Departments %}
-				<option> {{department}} </option>
+		<td> <select class="browser-default" id="PhysicalCampus">
+			{% for physical campus things in PhysicalCampus %}
+				<option> {{physicalcampus}} </option>
 			{% endfor %}
 		
-		</select>  <br><button onclick='GoToDepartment(document.getElementById("AllDepartments"));'> Search </button></td>
-		<td> <select id = "AllTeachers">
-			{% for teacher in Teachers %}
-				<option> {{teacher}} </option>
+		</select>  <br><button onclick='GoToPhysicalCampus(document.getElementById("AllPhysicalCampus"));'> Search </button></td>
+		<td> <select id = "AllColleges">
+			{% for colleges in Colleges %}
+				<option> {{college}} </option>
 			{% endfor %}
 		
 		</select>  <br><button onclick = 'IframeTeacherSearch(document.getElementById("AllTeachers"));'> Search </button></td> 
