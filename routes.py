@@ -136,11 +136,8 @@ def home():
 
 @app.route('/search/<query>/', methods=['POST'])
 def Search(query):
-    return School(query) #for now, until we can implement more advanced searching, such as finding schools that contain query string
-    '''
-    ratings = get_ratings(query.lower())
-    return render_template('search.html', query.lower(), ratings) #ratings is a list with overall, physical, academic, resources, rating_id
-    '''
+    if request.method == 'POST':
+        return School(query) #for now, until we can implement more advanced searching, such as finding schools that contain query string
 
 @app.route('/<schoolname>/')
 def School(schoolname):
@@ -151,18 +148,16 @@ def School(schoolname):
     return render_template('school_info.html', schoolname, avg_ratings, all_ratings) #avg_ratings/all_ratings good have size 0 if no reviews yet
     #school_info.html should use variables schoolname, avg_ratings, all_ratings    
     
-@app.route('/bestSchoolsFor/<page>', methods=['GET', 'POST']) #is this how i add the page value?
+@app.route('/bestSchoolsFor/<page>')
 def bestSchoolsFor(page):
     category = categories_reverse[page]
     rankings = get_rankings(category) # formatted as schoolname, value for specific category
     return render_template('bestSchoolsFor.html', category, rankings) #category name should go on the top of the page, rankings should be displayed in table (schoolname is a link to school page)
     #bestSchoolsFor.html should use variables category (to put on top of page), rankings (pairs of college name and score)
 
-@app.route('/schoolReviewForm/', methods=['GET', 'POST'])
+@app.route('/schoolReviewForm/', methods=['GET', 'POST']) #really confused as to what 'GET' and 'POST' are doing 
 def SchoolReview():
-    #def SchoolReview(schoolname):
-    #for posting school review
-    if request.method == 'POST':
+    if request.method == 'POST': #they submitted something
         #get info from form
         schoolname = request.form['schoolname']
         overall = request.form['overall']
@@ -173,11 +168,10 @@ def SchoolReview():
         
         #add to database!
         add_rating(schoolname, overall, physical, academic, resources, rating)
-
-        return render_template('PostSubmissionForm.html', test=' ')
+        return render_template('PostSubmissionForm.html', test=' ') #says thank you for your submission
         
     #for getting school review
-    return School(schoolname)    
+    return School(schoolname) #return as if you searched for it. (do we ever get here?)
 
 if __name__ == '__main__':
     app.run()
