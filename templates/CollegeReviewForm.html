@@ -1,5 +1,3 @@
-{% extends "layout.html" %}
-{% block content %}
 
 <form onsubmit= " var CourseElement = document.getElementById('CoursesTaughtID');
 	var course = CourseElement.options[CourseElement.selectedIndex].value;
@@ -9,42 +7,54 @@
 	}
 	return true;" id="formID" method="post">
 
-<h2 align = "middle"> Review for {{ProfessorName}} </h2>
-<h6 align="middle"> All ratings on a scale of A (Great) through F (Terrible) </h6>
+<h2 align = "middle"> Review for {{schoolname}} </h2>
+<h6 align="middle"> All ratings on a scale of 0 (Poor) through 10 (Excellent) </h6>
 <div class="row">
-	<div class="col s12">
-		<label>Course to Review</label>
-		<select class="browser-default" id="CoursesTaughtID" name="CoursesTaughtID">
-			<option value = "No course choosen"> Please Choose a course </option>
-			{% for course in CoursesTaught %}
-			<option value="{{course[2]}} {{course[3]}} {{course[4]}} {{course[5]}}">{{course[2]}} {{course[1]}} {{course[num_items]}}</option>
-			{% endfor %}
-		</select>
-	</div>
 	<div class="col s6">
-		<h3 align="center">Course Review</h3>
-		<label for="ToughnessID"> How Easy was this course? </label>
-		<select class="browser-default" id="ToughnessID" name="ToughnessID">
-			<option value="10">A</option>
-			<option value="8">B</option>
-			<option value="5">C</option>
-			<option value="3">D</option>
-			<option value="1">F</option>
+		<label for="overall"> How would you rate the overall level of accessibility? </label>
+		<select class="browser-default" id="overall" name="overall">
+			<option value="10">10</option>
+			<option value="9">9</option>
+			<option value="8">8</option>
+			<option value="7">7</option>
+			<option value="6">6</option>
+			<option value="5">5</option>
+			<option value="4">4</option>
+			<option value="3">3</option>
+			<option value="2">2</option>
+			<option value="1">1</option>
+			<option value="0">0</option>
 
 		</select>
-		<label for="InterestID"> How Interesting was this course? </label>
-		<select class="browser-default" id="InterestID" name="InterestID">
-			<option value="10">A</option>
-			<option value="8">B</option>
-			<option value="5">C</option>
-			<option value="3">D</option>
-			<option value="1">F</option>
+		<label for="physical"> Physical accessibility of this school? (ex: resident hall accessibility, classroom space, technology accomodations)</label>
+		<select class="browser-default" id="physical" name="physical">
+			<option value="10">10</option>
+			<option value="9">9</option>
+			<option value="8">8</option>
+			<option value="7">7</option>
+			<option value="6">6</option>
+			<option value="5">5</option>
+			<option value="4">4</option>
+			<option value="3">3</option>
+			<option value="2">2</option>
+			<option value="1">1</option>
+			<option value="0">0</option>
+
 
 		</select>
-		<label>Was the Textbook necessary?</label>
-		<select class="browser-default" id="TextbookNeeded" name="TextbookNeeded">
-			<option value = "1"> Yes </option>
-			<option value = "0"> No </option>
+		<label for "academic">Academic curriculum structure? (ex: Professors make accomodations for students with leaning disabilities)</label>
+		<select class="browser-default" id="academic" name="academic">
+			<option value="10">10</option>
+			<option value="9">9</option>
+			<option value="8">8</option>
+			<option value="7">7</option>
+			<option value="6">6</option>
+			<option value="5">5</option>
+			<option value="4">4</option>
+			<option value="3">3</option>
+			<option value="2">2</option>
+			<option value="1">1</option>
+			<option value="0">0</option>
 		</select>
 		<div class="row padded">
 			<div class="input-field col s12">
