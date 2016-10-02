@@ -37,6 +37,8 @@ def get_ratings(schoolname):
         rating_id          =  data[4]
         rating             =  data[5]
         ratings[rating_id] =  rating
+    if count == 0:
+        return None
     overall_average   = overall_total/count
     physical_average  = physical_total/count
     academic_average  = academic_total/count
@@ -72,8 +74,18 @@ def add_rating(schoolname, overall, physical, academic, resources, rating):
     physical = put_in_range(physical)
     academic = put_in_range(academic)
     resources = put_in_range(resources)
+    school_id = 0
+    #if the school already exists in t1_schools, pull up it's school_id
     for schooldata in c1.execute('SELECT school_id FROM t1_schools WHERE school_name = "'+schoolname+'";'):
         school_id = schooldata[0]
+    c2 = conn.cursor()
+    #if the school does not exist in the database, add it to t1_schools
+    if school_id == 0:
+        command = 'INSERT INTO t1_schools (school_name) VALUES (\"'+schoolname+'\")'
+        c2.execute(command)
+        for schooldata in c1.execute('SELECT school_id FROM t1_schools WHERE school_name = "'+schoolname+'";'):
+            school_id = schooldata[0]
+    #add this rating into t2_ratings
     c1.execute('INSERT INTO "t2_ratings" (school_id, overall, physical, academic, resources, rating) VALUES (?,?,?,?,?,?)',
                (school_id, overall, physical, academic, resources, rating))
 
