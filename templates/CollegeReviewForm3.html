@@ -1,0 +1,113 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<form onsubmit= " var CourseElement = document.getElementById('CoursesTaughtID');
+	var course = CourseElement.options[CourseElement.selectedIndex].value;
+	if (course === 'No course choosen'){
+		alert('Please fill out all required forms');
+		return false;
+	}
+	return true;" id="formID" method="post">
+
+<h2 align = "middle"> Review for {{ProfessorName}} </h2>
+<h6 align="middle"> All ratings on a scale of A (Great) through F (Terrible) </h6>
+<div class="row">
+	<div class="col s12">
+		<label>Course to Review</label>
+		<select class="browser-default" id="CoursesTaughtID" name="CoursesTaughtID">
+			<option value = "No course choosen"> Please Choose a course </option>
+			{% for course in CoursesTaught %}
+			<option value="{{course[2]}} {{course[3]}} {{course[4]}} {{course[5]}}">{{course[2]}} {{course[1]}} {{course[num_items]}}</option>
+			{% endfor %}
+		</select>
+	</div>
+	<div class="col s6">
+		<h3 align="center">Course Review</h3>
+		<label for="ToughnessID"> How Easy was this course? </label>
+		<select class="browser-default" id="ToughnessID" name="ToughnessID">
+			<option value="10">A</option>
+			<option value="8">B</option>
+			<option value="5">C</option>
+			<option value="3">D</option>
+			<option value="1">F</option>
+
+		</select>
+		<label for="InterestID"> How Interesting was this course? </label>
+		<select class="browser-default" id="InterestID" name="InterestID">
+			<option value="10">A</option>
+			<option value="8">B</option>
+			<option value="5">C</option>
+			<option value="3">D</option>
+			<option value="1">F</option>
+
+		</select>
+		<label>Was the Textbook necessary?</label>
+		<select class="browser-default" id="TextbookNeeded" name="TextbookNeeded">
+			<option value = "1"> Yes </option>
+			<option value = "0"> No </option>
+		</select>
+		<div class="row padded">
+			<div class="input-field col s12">
+				<textarea id="OptionalResponseCourse" name="OptionalResponseCourse" class="materialize-textarea"></textarea>
+				<label for="OptionalResponseCourse">Description of Course </label>
+			</div>
+		</div>
+	</div>
+	<div class="col s6">
+		<h3 align="center">Professor Review</h3>
+		<label for="GradingID"> How was the grading for this course?</label>
+		<select class="browser-default" id="GradingID" name="GradingID">
+		<option value="10">A</option>
+			<option value="8">B</option>
+			<option value="5">C</option>
+			<option value="3">D</option>
+			<option value="1">F</option>
+
+		</select>
+		<label for="WorkloadID"> How was the workload? </label>
+		<select class="browser-default" id="WorkloadID" name="WorkloadID">
+			<option value="10">A</option>
+			<option value="8">B</option>
+			<option value="5">C</option>
+			<option value="3">D</option>
+			<option value="1">F</option>
+
+		</select>
+		<label for="QualityID">How good was this professor? </label>
+		<select class="browser-default" id="QualityID" name="QualityID">
+			<option value="10">A</option>
+			<option value="8">B</option>
+			<option value="5">C</option>
+			<option value="3">D</option>
+			<option value="1">F</option>
+
+		</select>
+		<label for="AccessibilityID">How accessible was this professor?</label>
+		<select class="browser-default" id="AccessibilityID" name="AccessibilityID">
+			<option value="10">A</option>
+			<option value="8">B</option>
+			<option value="5">C</option>
+			<option value="3">D</option>
+			<option value="1">F</option>
+
+		</select>
+		<label for="SyllabusID">Was the Syllabus useful?</label>
+		<select class="browser-default" id="SyllabusID" name="SyllabusID">
+			<option value = "0"> Never used it </option>
+			<option value = "1"> It came in handy at times </option>
+			<option value = "2"> It's your lifeline </option>
+		</select>
+		<div class="row padded">
+			<div class="input-field col s12">
+				<textarea id="OptionalResponseProfessor" name="OptionalResponseProfessor" class="materialize-textarea"></textarea>
+				<label for="OptionalResponseProfessor">Description of Professor </label>
+			</div>
+		</div>
+	</div>
+</div>
+
+<input class="btn btn-large blue lighten-2 centerButton" style="display:block;" type="submit" value="Submit Reviews"></input>
+
+</form>
+
+{% endblock %}
